@@ -1,147 +1,130 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(){
-	
-	// Declarando Variáveis
-	int i;
-	int j;
-	int tela = 0;
-	int escolha;
-	
-	char fase1 [10][10];
-	char fase2 [20][20];
-	char fase3 [40][40];
-	
-	int move;
-	int pos_playerX = 1, pos_playerY = 1;
-<<<<<<< Updated upstream
-=======
-	char player = '&';
-	char key = '@';
-	int player_has_key = 0; 
-	char CLOSED_DOOR ='D';	
-	char OPENED_DOOR = '=';
->>>>>>> Stashed changes
-	
-	char PLAYER_CHAR = '&';
-	char KEY_CHAR = '@';
-	char MONSTER_CHAR = 'X';
-	
-	int player_has_key = 0; 
-	// Inicializando as matrizes
-  	for (i = 0; i < 10; i++) {
+int main() {
+    // Declare Variables
+    int i;
+    int j;
+    int screen = 0;
+    int choice;
+
+    char level1[10][10];
+    char level2[20][20];
+    char level3[40][40];
+
+    int move;
+    int playerX = 1, playerY = 1;
+
+    char player = '&';
+    char key = '@';
+    int playerHasKey = 0;
+    char CLOSED_DOOR = 'D';
+    char OPENED_DOOR = '=';
+
+    char PLAYER_CHAR = '&';
+    char KEY_CHAR = '@';
+    char MONSTER_CHAR = 'X';
+
+    // Initialize matrices
+    for (i = 0; i < 10; i++) {
         for (j = 0; j < 10; j++) {
             if (i == 0 || i == 9 || j == 0 || j == 9) {
-                fase1[i][j] = '*';
+                level1[i][j] = '*';
             } else {
-                fase1[i][j] = ' ';
+                level1[i][j] = ' ';
             }
         }
-        
     }
-	
-	// Laço do menu principal
-	
-	while(tela == 0){
-		
-		system("cls");
-		printf("Silas, O Lobo \n1-Jogar\n2-Tutorial\n3-Sair\n");
-		escolha = getch();
-		
-		if(escolha =='1'){
-			system("cls");
-			printf ("Em uma noite escura,");
-			system("pause");
 
-			tela = 1;
-			system("cls");
-		}
-		
-		else if(escolha=='2'){
-		system ("cls");	
-		printf(
-		"Ok, aqui vao algumas instrucoes:\n\n"
-		"O jogo e do estilo aventura onde o objetivo e o jogador conseguir passar as 3 fases.\n"
-		"Em cada fase,o jogador deve se movimentar para pegar uma chave e abir uma porta fechada.\n\n"
-		"Aqui estao os seguintes comandos que o jogador deve usar para completar as missoes:\n\n"
-		"W: o jogador movimenta uma unidade para cima\n"
-		"A: O jogador movimenta uma unidade para esquerda\n"
-		"S: O jogador movimenta uma unidade para baixo\n"
-		"D: O jogador movimenta uma unidade para direita\n"
-		"I: O jogador interage com o objeto que esta em cima\n ");
-		system("pause");
-		}
-		
-		else if(escolha=='3'){
-		system("cls");
-		printf("Os uivos ecoam pela floresta enquanto voce se afasta. Ate a proxima lua cheia, corajoso aventureiro.");
-		return 0;
-		}
-		else{
-			printf("Aperte uma tecla valida!\n");
-			system("pause");
-		}
-	}
-	
-	while (tela == 1){
-		
-		for (i = 0; i < 10; i++){
-			for (j = 0; j < 10; j++){
-				if (i == pos_playerY && j == pos_playerX){
-					fase1[i][j] = PLAYER_CHAR;
-				}
-				printf("%c", fase1[i][j]);
-			}
-			printf("\n");
-		}
-<<<<<<< Updated upstream
-		fase1[6][6] = MONSTER_CHAR;
-=======
-		if(player_has_key == 0){
-			fase1[9][5] = CLOSED_DOOR;
-		}
-		else{
-			fase1[9][5] = OPENED_DOOR;
-		}
->>>>>>> Stashed changes
-		
-		if (player_has_key == 0){
-			fase1[5][5] = KEY_CHAR;
-		}
-		
-		fase1[pos_playerY][pos_playerX] = ' ';
-		
-		move = getch();
-		
-		if (move == 'w'&& pos_playerY - 1 != 0 && pos_playerY - 1 != 9){
-			pos_playerY--;	
-		}
-		if (move == 's'&& pos_playerY + 1 != 0 && pos_playerY + 1 != 9){
-			pos_playerY++;
-		}
-		if (move == 'a'&& pos_playerX - 1 != 0 && pos_playerX - 1 != 9){
-			pos_playerX--;
-		}
-		if (move == 'd'&& pos_playerX + 1 != 0 && pos_playerX + 1 != 9){
-			pos_playerX++;	
-		}
-		if (move == 'i'&& pos_playerX  == 5 && pos_playerY  == 5){
-			player_has_key = 1;
-		}
-		if (pos_playerX  == 6 && pos_playerY  == 6){
-			system("cls");
-			printf(
-			"Silas morreu tadinho. Mas ele pode tentar de novo se apertal alguma tecla\n\n"
-			
-			);
-			system("pause");
-			
-			pos_playerX  = 1; 
-			pos_playerY  = 1;
-		}
-		system("cls");
-	}
-	
-	return 0;
+    // Main menu loop
+    while (screen == 0) {
+        system("cls");
+        printf("Silas, The Wolf\n1-Play\n2-Tutorial\n3-Exit\n");
+        choice = getch();
+
+        if (choice == '1') {
+            system("cls");
+            printf("On a dark night,");
+            system("pause");
+            screen = 1;
+            system("cls");
+        } else if (choice == '2') {
+            system("cls");
+            printf(
+                "Alright, here are some instructions:\n\n"
+                "The game is an adventure where the player must pass 3 levels.\n"
+                "In each level, the player must move to collect a key and open a closed door.\n\n"
+                "Use the following commands to complete the missions:\n\n"
+                "W: Move one unit up\n"
+                "A: Move one unit left\n"
+                "S: Move one unit down\n"
+                "D: Move one unit right\n"
+                "I: Interact with the object on top\n");
+            system("pause");
+        } else if (choice == '3') {
+            system("cls");
+            printf("The howls echo through the forest as you depart. Until the next full moon, brave adventurer.");
+            return 0;
+        } else {
+            printf("Press a valid key!\n");
+            system("pause");
+        }
+    }
+
+    // Level 1 loop
+    while (screen == 1) {
+        level1[6][6] = MONSTER_CHAR;
+
+        if (playerHasKey == 0) {
+            level1[9][5] = CLOSED_DOOR;
+        } else {
+            level1[9][5] = OPENED_DOOR;
+        }
+
+        if (playerHasKey == 0) {
+            level1[5][5] = KEY_CHAR;
+        }
+
+        for (i = 0; i < 10; i++) {
+            for (j = 0; j < 10; j++) {
+                if (i == playerY && j == playerX) {
+                    level1[i][j] = PLAYER_CHAR;
+                }
+                printf("%c", level1[i][j]);
+            }
+            printf("\n");
+        }
+
+        level1[playerY][playerX] = ' ';
+
+        move = getch();
+
+        if (move == 'w' && playerY - 1 != 0 && playerY - 1 != 9) {
+            playerY--;
+        }
+        if (move == 's' && playerY + 1 != 0 && playerY + 1 != 9) {
+            playerY++;
+        }
+        if (move == 'a' && playerX - 1 != 0 && playerX - 1 != 9) {
+            playerX--;
+        }
+        if (move == 'd' && playerX + 1 != 0 && playerX + 1 != 9) {
+            playerX++;
+        }
+        if (move == 'i' && playerX == 5 && playerY == 5) {
+            playerHasKey = 1;
+        }
+        if (playerX == 6 && playerY == 6) {
+            system("cls");
+            printf("Silas died, poor thing. But he can try again by pressing any key.\n\n");
+            system("pause");
+            playerX = 1;
+            playerY = 1;
+            playerHasKey = 0;
+        }
+        system("cls");
+    }
+
+    return 0;
 }
+
