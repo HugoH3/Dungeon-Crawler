@@ -18,11 +18,15 @@ int main(){
 	
 	
 	// Inicializando as matrizes
-	for (i = 0; i < 10; i++){
-		for (j = 0; j < 10; j++){
-			fase1[i][j] = '*';
-		}
-	}
+  	for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            if (i == 0 || i == 9 || j == 0 || j == 9) {
+                fase1[i][j] = '*';
+            } else {
+                fase1[i][j] = ' ';
+            }
+        }
+    }
 	
 	// Laço do menu principal
 	
@@ -71,7 +75,7 @@ int main(){
 		
 		for (i = 0; i < 10; i++){
 			for (j = 0; j < 10; j++){
-				if (i == pos_playerX && j == pos_playerY){
+				if (i == pos_playerY && j == pos_playerX){
 					fase1[i][j] = player;
 				}
 				printf("%c", fase1[i][j]);
@@ -79,16 +83,23 @@ int main(){
 			printf("\n");
 		}
 		
+		fase1[pos_playerY][pos_playerX] = ' ';
+		
 		move = getch();
-		if (move == 'w'){
-			pos_playerY++;
-			
+		
+		if (move == 'w'&& pos_playerY - 1 != 0 && pos_playerY - 1 != 9){
+			pos_playerY--;	
 		}
-		if (move == 's'){
-			pos_playerY--;
+		if (move == 's'&& pos_playerY + 1 != 0 && pos_playerY + 1 != 9){
+			pos_playerY++;
+		}
+		if (move == 'a'&& pos_playerX - 1 != 0 && pos_playerX - 1 != 9){
+			pos_playerX--;
+		}
+		if (move == 'd'&& pos_playerX + 1 != 0 && pos_playerX + 1 != 9){
+			pos_playerX++;	
 		}
 		system("cls");
-		
 	}
 	
 	return 0;
