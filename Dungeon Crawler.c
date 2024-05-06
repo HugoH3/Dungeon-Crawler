@@ -3,29 +3,41 @@
 
 int main(){
 	
-	int menu = 1;
-	int rm = 9;
-	char escolha;
+	int i;
+	int j;
+	int tela = 0;
+	int escolha;
+	
 	char fase1 [10][10];
 	char fase2 [20][20];
 	char fase3 [40][40];
 	
-	char player='&';
+	int move;
+	int pos_playerX = 1, pos_playerY = 1;
+	char player = '&';
+	
+	
+	// Inicializando as matrizes
+	for (i = 0; i < 10; i++){
+		for (j = 0; j < 10; j++){
+			fase1[i][j] = '*';
+		}
+	}
 	
 	// Laço do menu principal
 	
-	while(menu > 0){
+	while(tela == 0){
 		
 		system("cls");
 		printf("Silas, O Lobo \n1-Jogar\n2-Tutorial\n3-Sair\n");
-		scanf(" %c", &escolha);
+		escolha = getch();
 		
 		if(escolha =='1'){
 			system("cls");
-			printf ("Historia do lobo silas\n");
+			printf ("Em uma noite escura,");
 			system("pause");
-			menu = 0;
-			rm = 1;
+
+			tela = 1;
 			system("cls");
 		}
 		
@@ -46,14 +58,38 @@ int main(){
 		
 		else if(escolha=='3'){
 		system("cls");
-		printf("Os uivos ecoam pela floresta enquanto você se afasta. Ate a proxima lua cheia, corajoso aventureiro.");
+		printf("Os uivos ecoam pela floresta enquanto voce se afasta. Ate a proxima lua cheia, corajoso aventureiro.");
 		return 0;
 		}
+		else{
+			printf("la ele 1000x kkkkk. kkkk do bora bill \n kkk la eleeeeeee \n kkkkk... \nklkkkkkk!!! la ele :)\n");
+			system("pause");
+		}
 	}
-	while (rm == 1){
-		// Aqui deve começar a primeira fase, ainda por fazer.
-		printf("placeholder");
-		system("pause");
+	
+	while (tela == 1){
+		
+		for (i = 0; i < 10; i++){
+			for (j = 0; j < 10; j++){
+				if (i == pos_playerX && j == pos_playerY){
+					fase1[i][j] = player;
+				}
+				printf("%c", fase1[i][j]);
+			}
+			printf("\n");
 		}
 		
+		move = getch();
+		if (move == 'w'){
+			pos_playerY++;
+			
+		}
+		if (move == 's'){
+			pos_playerY--;
+		}
+		system("cls");
+		
+	}
+	
+	return 0;
 }
