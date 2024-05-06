@@ -15,6 +15,14 @@ int main(){
 	
 	int move;
 	int pos_playerX = 1, pos_playerY = 1;
+<<<<<<< Updated upstream
+=======
+	char player = '&';
+	char key = '@';
+	int player_has_key = 0; 
+	char CLOSED_DOOR ='D';	
+	char OPENED_DOOR = '=';
+>>>>>>> Stashed changes
 	
 	char PLAYER_CHAR = '&';
 	char KEY_CHAR = '@';
@@ -30,6 +38,7 @@ int main(){
                 fase1[i][j] = ' ';
             }
         }
+        
     }
 	
 	// Laço do menu principal
@@ -86,7 +95,16 @@ int main(){
 			}
 			printf("\n");
 		}
+<<<<<<< Updated upstream
 		fase1[6][6] = MONSTER_CHAR;
+=======
+		if(player_has_key == 0){
+			fase1[9][5] = CLOSED_DOOR;
+		}
+		else{
+			fase1[9][5] = OPENED_DOOR;
+		}
+>>>>>>> Stashed changes
 		
 		if (player_has_key == 0){
 			fase1[5][5] = KEY_CHAR;
