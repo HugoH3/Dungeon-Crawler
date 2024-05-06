@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main(){
-	
+	//variaveis
 	int i;
 	int j;
 	int tela = 0;
@@ -15,7 +15,8 @@ int main(){
 	int move;
 	int pos_playerX = 1, pos_playerY = 1;
 	char player = '&';
-	
+	char key = '@';
+	int player_has_key = 0; 
 	
 	// Inicializando as matrizes
   	for (i = 0; i < 10; i++) {
@@ -83,6 +84,9 @@ int main(){
 			printf("\n");
 		}
 		
+		if (player_has_key == 0){
+			fase1[5][5] = '@';
+		}
 		fase1[pos_playerY][pos_playerX] = ' ';
 		
 		move = getch();
@@ -98,6 +102,9 @@ int main(){
 		}
 		if (move == 'd'&& pos_playerX + 1 != 0 && pos_playerX + 1 != 9){
 			pos_playerX++;	
+		}
+		if (move == 'i'&& pos_playerX  == 5 && pos_playerX  == 5){
+			player_has_key = 1;
 		}
 		system("cls");
 	}
