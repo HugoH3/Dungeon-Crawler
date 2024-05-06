@@ -2,7 +2,8 @@
 #include <stdlib.h>
 
 int main(){
-	//variaveis
+	
+	// Declarando Variáveis
 	int i;
 	int j;
 	int tela = 0;
@@ -14,10 +15,12 @@ int main(){
 	
 	int move;
 	int pos_playerX = 1, pos_playerY = 1;
-	char player = '&';
-	char key = '@';
-	int player_has_key = 0; 
 	
+	char PLAYER_CHAR = '&';
+	char KEY_CHAR = '@';
+	char MONSTER_CHAR = 'X';
+	
+	int player_has_key = 0; 
 	// Inicializando as matrizes
   	for (i = 0; i < 10; i++) {
         for (j = 0; j < 10; j++) {
@@ -67,7 +70,7 @@ int main(){
 		return 0;
 		}
 		else{
-			printf("la ele 1000x kkkkk. kkkk do bora bill \n kkk la eleeeeeee \n kkkkk... \nklkkkkkk!!! la ele :)\n");
+			printf("Aperte uma tecla valida!\n");
 			system("pause");
 		}
 	}
@@ -77,16 +80,18 @@ int main(){
 		for (i = 0; i < 10; i++){
 			for (j = 0; j < 10; j++){
 				if (i == pos_playerY && j == pos_playerX){
-					fase1[i][j] = player;
+					fase1[i][j] = PLAYER_CHAR;
 				}
 				printf("%c", fase1[i][j]);
 			}
 			printf("\n");
 		}
+		fase1[6][6] = MONSTER_CHAR;
 		
 		if (player_has_key == 0){
-			fase1[5][5] = '@';
+			fase1[5][5] = KEY_CHAR;
 		}
+		
 		fase1[pos_playerY][pos_playerX] = ' ';
 		
 		move = getch();
@@ -103,8 +108,19 @@ int main(){
 		if (move == 'd'&& pos_playerX + 1 != 0 && pos_playerX + 1 != 9){
 			pos_playerX++;	
 		}
-		if (move == 'i'&& pos_playerX  == 5 && pos_playerX  == 5){
+		if (move == 'i'&& pos_playerX  == 5 && pos_playerY  == 5){
 			player_has_key = 1;
+		}
+		if (pos_playerX  == 6 && pos_playerY  == 6){
+			system("cls");
+			printf(
+			"Silas morreu tadinho. Mas ele pode tentar de novo se apertal alguma tecla\n\n"
+			
+			);
+			system("pause");
+			
+			pos_playerX  = 1; 
+			pos_playerY  = 1;
 		}
 		system("cls");
 	}
