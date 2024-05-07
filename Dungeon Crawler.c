@@ -1,19 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Função de inicializar as matrizes, criando as paredes da fase
+
+void levelWalls (int xLimit, int yLimit, char level[xLimit][yLimit]){
+    level[xLimit][yLimit];
+    for (int x = 0; x < xLimit; x++) {
+        for (int y = 0; y < yLimit; y++) {
+            if (x == 0 || x == xLimit - 1 || y == 0 || y == yLimit - 1) {
+                level[x][y] = '*';
+            } else {
+                level[x][y] = ' ';
+            }
+        }
+    } 
+}
+
 int main() {
-    // Declare Variables
-    int i;
-    int j;
+
+    // Declaração de variavéis 
     int screen = 0;
     int choice;
 
-    char level1[10][10];
-    char level2[20][20];
-    char level3[40][40];
-
-    int move;
+    int key_pressed;
     int playerX = 1, playerY = 1;
+    int coord_X, coord_Y;
+
 
     char player = '&';
     char key = '@';
@@ -25,16 +37,10 @@ int main() {
     char KEY_CHAR = '@';
     char MONSTER_CHAR = 'X';
 
-    // Initialize matrices
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
-            if (i == 0 || i == 9 || j == 0 || j == 9) {
-                level1[i][j] = '*';
-            } else {
-                level1[i][j] = ' ';
-            }
-        }
-    }
+    // Inicializando matrizes
+
+    char level1[10][10];
+    levelWalls(10,10, level1);
 
     // Main menu loop
     while (screen == 0) {
@@ -44,7 +50,9 @@ int main() {
 
         if (choice == '1') {
             system("cls");
-            printf("On a dark night,");
+
+            // Todo: Adicionar introdução da história aqui
+            printf("Silas");
             system("pause");
             screen = 1;
             system("cls");
@@ -85,33 +93,34 @@ int main() {
             level1[5][5] = KEY_CHAR;
         }
 
-        for (i = 0; i < 10; i++) {
-            for (j = 0; j < 10; j++) {
-                if (i == playerY && j == playerX) {
-                    level1[i][j] = PLAYER_CHAR;
+        for (coord_X = 0; coord_X < 10; coord_X++) {
+            for (coord_Y = 0; coord_Y < 10; coord_Y++) {
+                if (coord_X == playerY && coord_Y == playerX) {
+                    level1[coord_X][coord_Y] = PLAYER_CHAR;
                 }
-                printf("%c", level1[i][j]);
+                printf("%c", level1[coord_X][coord_Y]);
             }
             printf("\n");
         }
 
         level1[playerY][playerX] = ' ';
 
-        move = getch();
+        key_pressed = getch();
 
-        if (move == 'w' && playerY - 1 != 0 && playerY - 1 != 9) {
+        // Todo: Transformar isso em uma função
+        if (key_pressed == 'w' && playerY - 1 != 0 && playerY - 1 != 9) {
             playerY--;
         }
-        if (move == 's' && playerY + 1 != 0 && playerY + 1 != 9) {
+        if (key_pressed == 's' && playerY + 1 != 0 && playerY + 1 != 9) {
             playerY++;
         }
-        if (move == 'a' && playerX - 1 != 0 && playerX - 1 != 9) {
+        if (key_pressed == 'a' && playerX - 1 != 0 && playerX - 1 != 9) {
             playerX--;
         }
-        if (move == 'd' && playerX + 1 != 0 && playerX + 1 != 9) {
+        if (key_pressed == 'd' && playerX + 1 != 0 && playerX + 1 != 9) {
             playerX++;
         }
-        if (move == 'i' && playerX == 5 && playerY == 5) {
+        if (key_pressed == 'i' && playerX == 5 && playerY == 5) {
             playerHasKey = 1;
         }
         if (playerX == 6 && playerY == 6) {
@@ -127,4 +136,3 @@ int main() {
 
     return 0;
 }
-
