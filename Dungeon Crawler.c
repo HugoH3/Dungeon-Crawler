@@ -23,25 +23,18 @@ int player_has_key = 0;
 char key_pressed;
 int playerX = 1, playerY = 1;
 int monsterX, monsterY;
-int player_has_key;
-int keyX, keyY;
 int doorX, doorY;
-int x, y;
-int monstermov;
+int keyX, keyY;
+int player_has_key;
 int button_pressed;
 int screen;
-int lives = 3;
+int lives;
+
 
 // Funções do Jogo
-void placeKeyAndDoor(keyX, keyY, doorX, doorY)
+void placeKeyAndDoor()
 {
-    // Condição para abrir a porta
-    if (playerX == keyX && playerY == keyY && key_pressed == 'i')
-    {
-        player_has_key = 1;
-    }
-
-    // Posicionando a porta e a chave
+    // Interação do player pra pegar a chave
     if (player_has_key == 0)
     {
         map[doorX][doorY] = CLOSED_DOOR;
@@ -50,63 +43,69 @@ void placeKeyAndDoor(keyX, keyY, doorX, doorY)
     else
     {
         map[doorX][doorY] = OPENED_DOOR;
-        map[keyX][keyY] = EMPTY_SPACE;
+        map[keyX][keyY] = EMPTY_SPACE;  
     }
 }
-void monsterMovement(int limit)
+void placeMonster(int limit)
 {
-    monstermov = rand()%4;
-        if (monstermov == 0 && monsterX - 1 != 0 && monsterX - 1 != limit)
-        {
-            monsterX--;
-        }
-        else if (monstermov == 1 && monsterX + 1 != 0 && monsterX + 1 != limit)
-        {
-            monsterX++;
-        }
-        else if (monstermov == 2 && monsterY - 1 != 0 && monsterY - 1 != limit)
-        {
-            monsterY--;
-        }
-        else if (monstermov == 3 && monsterY + 1 != 0 && monsterY + 1 != limit)
-        {
-            monsterY++;
-        }
-    map[monsterX][monsterY] = MONSTER_CHAR;
+    int monsterDirection = rand()%4;
+
+    // Colisão com as paredes e objetos
+
+    // Todo: Nao deixar sobrescrever a chave
+    if (monsterDirection == 0 && monsterX - 1 > 0 && monsterX)
+    {
+        monsterX--;
+    }
+    else if (monsterDirection == 1 && monsterX + 1 < limit)
+    {
+        monsterX++;
+    }
+    else if (monsterDirection == 2 && monsterY - 1 > 0)
+    {
+        monsterY--;
+    }
+    else if (monsterDirection == 3 && monsterY + 1 < limit)
+    {
+        monsterY++;
+    }
 }
-void playerMovement(char key_pressed)
+void playerInteractions(int limit)
 {
     if (key_pressed == 'q')
     {
         screen = 0;
         main();
     }
-    if (key_pressed == 'w' && map[playerX-1][playerY] != WALL_CHAR)
+    if (key_pressed == 'w' && playerX - 1 > 0)
     {
         playerX--;
     }
-    if (key_pressed == 's' && map[playerX+1][playerY] != WALL_CHAR)
+    if (key_pressed == 's' && playerX + 1 < limit)
     {
         playerX++;
     }
-    if (key_pressed == 'a' && map[playerX][playerY-1] != WALL_CHAR)
+    if (key_pressed == 'a' && playerY - 1 > 0 )
     {
         playerY--;
     }
-    if (key_pressed == 'd' && map[playerX][playerY+1] != WALL_CHAR)
+    if (key_pressed == 'd' && playerY + 1 < limit)
     {
-        playerY++;
+        playerY++;  
     }
-    map[playerX][playerY] = PLAYER_CHAR;
-}
-void levelWalls(int limit)
-{
-    for (int x = 0; x < limit; x++)
+    if (key_pressed == 'i' && map[playerX][playerY] == map[keyX][keyY])
     {
-        for (int y = 0; y < limit; y++)
+        player_has_key = 1;
+    }
+}
+void levelWalls(int level_size)
+{
+    for (int x = 0; x < level_size; x++)
+    {
+        for (int y = 0; y < level_size; y++)
         {
             // Definindo onde devem ficar as paredes e onde devem ter espaços vazios
-            if (x == 0 || x == limit - 1 || y == 0 || y == limit - 1)
+            if (x == 0 || x == level_size - 1 || y == 0 || y == level_size - 1)
             {
                 map[x][y] = WALL_CHAR;
             }
@@ -117,12 +116,12 @@ void levelWalls(int limit)
         }
     }
 }
-void print_level(int limit)
+void print_level(int level_size)
 {
     // Imprimindo o level
-    for (x = 0; x < limit; x++)
+    for (int x = 0; x < level_size; x++)
     {
-        for (y = 0; y < limit; y++)
+        for (int y = 0; y < level_size; y++)
         {
             printf("%c", map[x][y]);
         }
@@ -132,12 +131,11 @@ void print_level(int limit)
     map[monsterX][monsterY] = EMPTY_SPACE;
 
 }
-void gameOver() 
-{
-    if (map[playerX][playerY] == SPIKE_CHAR || 
-        map[playerX][playerY] == MONSTER_CHAR || 
-        map[playerX][playerY] == MONSTER2_CHAR) 
+void checkColision(int limit) 
+{   
+    if(map[playerX][playerY] == MONSTER_CHAR)
     {
+        // Todo: Consertar sistema de vidas
         if (lives == 0) 
         {
             printf
@@ -151,13 +149,18 @@ void gameOver()
         }
         else
         {
+            playerY = 1;
+            playerX = 1; 
+            player_has_key = 0;
+            lives--;
+            monsterX = 5+rand()%(limit - 5);
+            monsterY = 5+rand()%(limit - 5);
+            system("cls");
             printf("|C'mon Silas, are you even trying?|\n|Lifes left: %d|\n\n", lives);
             system("pause");
-            playerY = 1;
-            playerX = 1;
-            player_has_key = 0;
+            system("cls");
         }
-    }
+    } 
 }
 void mainMenu()
 {
@@ -217,25 +220,41 @@ int main()
     srand(time(NULL));
     mainMenu();
 
-    // Iniciando a Fase 1
+    // Transição entre o menu e a fase 1
+
+    lives = 3;
+    monsterX = 5;
+    monsterY = 4;
+    keyX = 5;
+    keyY = 5;
+    doorX = 9;
+    doorY = 6;
+
     while (screen == 1)
-    {     
+    {   
+        // Alocando objetos dentro do mapa
         levelWalls(10);
-        
-        monsterX = 7;
-        monsterY = 8;
-
-        placeKeyAndDoor(3, 8, 9, 6);
-        map[monsterX][monsterY] = MONSTER_CHAR;
+        playerInteractions(9);
+        placeMonster(9);
+        placeKeyAndDoor();
         map[playerX][playerY] = PLAYER_CHAR;
-
+        map[monsterX][monsterY] = MONSTER_CHAR;
+        checkColision(9);
+        
+        // Debug menu
+        /* 
+        printf("POSITION: %d %d\n", playerX, playerY);
+        printf("MONSTER: %d %d\n", monsterX, monsterY);
+        printf("KEY: %d %d\n", keyX, keyY);
+        printf("CHAR IN POSITION: %c\n", map[playerX][playerY]);
+        */
+    
         print_level(10);
         key_pressed = getch();
-        playerMovement(key_pressed);
-        gameOver();
-        
+
         system("cls");
     }
+
     // Transição entre a Fase 1 e a Fase 2
     system("cls");
     printf
@@ -246,43 +265,33 @@ int main()
         "|It's a Fabiliraryanalizerichardugo, a monster that can only be summoned by skilled wizards\n"
         "|This monster follows his target until he gets close enough to absorb all energy\n"
     );
+
     system("pause");
-    // Inicio da Fase 2
+
+    /* 
+    Inicio da Fase 2
     while (screen == 2)
     {   
         levelWalls(20);
-
-        // Declarando posições iniciais dos objetos
-
-        monsterX = 10;
-        monsterY = 17;
-        keyX = 2;
-        keyY = 8;
         
         // Lógica do botão, ele tenha sido pressionado, os espinhos envolta da chave sumirão
-        if (player_has_key == 0)
-        {
-            map[19][5] = CLOSED_DOOR;
-            map[keyX][keyY] = KEY_CHAR;
-        }
-        else
-        {
-            map[19][5] = OPENED_DOOR;
-        }
+        
+        placeKeyAndDoor(10);
+
         if (button_pressed == 0)
         {
-            map[keyX-1][keyY] = SPIKE_CHAR;
-            map[keyX+1][keyY] = SPIKE_CHAR;
-            map[keyX][keyY-1] = SPIKE_CHAR;
-            map[keyX][keyY+1] = SPIKE_CHAR;
+            map[16-1][10] = SPIKE_CHAR;
+            map[16+1][10] = SPIKE_CHAR;
+            map[16][10-1] = SPIKE_CHAR;
+            map[16][10+1] = SPIKE_CHAR;
             map[12][12] = BUTTON_CHAR;
         }
         else
         {
-            map[keyX-1][keyY] = EMPTY_SPACE;
-            map[keyX+1][keyY] = EMPTY_SPACE;
-            map[keyX][keyY-1] = EMPTY_SPACE;
-            map[keyX][keyY+1] = EMPTY_SPACE;
+            map[16-1][10] = EMPTY_SPACE;
+            map[16+1][10] = EMPTY_SPACE;
+            map[16][10-1] = EMPTY_SPACE;
+            map[16][10+1] = EMPTY_SPACE;
         }
 
         // Colocando o player e monstro
@@ -298,11 +307,6 @@ int main()
         }
         key_pressed = getch();
 
-        if (playerX == keyX && playerY == keyY && key_pressed == 'i')
-        {
-            player_has_key = 1;
-            map[19][5] = OPENED_DOOR;
-        }
         if (playerX == 18 && playerY == 5 && player_has_key == 1 && key_pressed == 's'){
             system("cls");
             screen = 3;
@@ -310,10 +314,11 @@ int main()
             system("pause");
         }
         
-        playerMovement(key_pressed);
-        gameOver();
+        playerInteractions(19);
+        checkColision();
         system("cls");
 
-    }
+    } 
+    */
     return 0;
 }
