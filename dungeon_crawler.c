@@ -71,24 +71,24 @@ void placeMonster(int limit)
         monsterY++;
     }
 }
-void placeMonster2(int limit)
+void placeMonster2()
 {
-    int difX = playerX - monsterX;
-    int difY = playerY - monsterY;
+    int difX = playerX - monster2X;
+    int difY = playerY - monster2Y;
 
-    if (abs(difX) > abs(difY) && playerX < monster2X && monster2X - 1 > 0)
+    if (abs(difX) > abs(difY) && playerX < monster2X)
     {
         monster2X--;
     }
-    else if (abs(difX) > abs(difY) && playerX > monster2X && monster2X + 1 < limit)
+    else if (abs(difX) > abs(difY) && playerX > monster2X)
     {
         monster2X++;
     }
-    else if (abs(difX) < abs(difY) && playerX < monster2X && monster2Y - 1 > 0)
+    else if (abs(difX) < abs(difY) && playerY < monster2Y)
     {
         monster2Y--;
     }
-    else if (abs(difX) < abs(difY) && playerX < monster2X && monster2Y + 1 < limit)
+    else if (abs(difX) < abs(difY) && playerY > monster2Y)
     {
         monster2Y++;
     }
@@ -116,6 +116,7 @@ void playerInteractions(int limit)
     {
         playerY++;  
     }
+    // Todo: Consertar player pegando chave em qualquer canto
     if (key_pressed == 'i' && map[playerX][playerY] == map[keyX][keyY])
     {
         player_has_key = 1;
@@ -155,7 +156,7 @@ void print_level(int level_size)
 }
 void checkColision(int limit) 
 {   
-    if(map[playerX][playerY] == MONSTER_CHAR)
+    if(map[playerX][playerY] == MONSTER_CHAR || map[playerX][playerY] == MONSTER2_CHAR || map[playerX][playerY] == SPIKE_CHAR)
     {
         // Todo: Consertar sistema de vidas
         if (lives == 0) 
@@ -177,6 +178,8 @@ void checkColision(int limit)
             lives--;
             monsterX = 5+rand()%(limit - 5);
             monsterY = 5+rand()%(limit - 5);
+            monster2X = 5+rand()%(limit - 5);
+            monster2Y = 5+rand()%(limit - 5);
             system("cls");
             printf("|C'mon Silas, are you even trying?|\n|Lifes left: %d|\n\n", lives);
             system("pause");
@@ -298,7 +301,7 @@ int main()
 
     system("pause");
 
-
+    button_pressed = 0;
     player_has_key = 0;
     doorX = 19;
     doorY = 8;
@@ -309,47 +312,30 @@ int main()
 
     // Inicio da Fase 2
     while (screen == 2)
-    {   
+    {  
         system("cls");
         levelWalls(20);
         playerInteractions(19);
+        placeMonster2();
         placeMonster(19);
-        placeMonster2(19);
         placeKeyAndDoor();
-
-        printf("POSITION: %d %d\n", playerX, playerY);
-        printf("MONSTER2: %d %d\n");
-        printf("KEY: %d %d\n", keyX, keyY);
-        printf("CHAR IN POSITION: %c\n", map[playerX][playerY]);
 
         map[playerX][playerY] = PLAYER_CHAR;
         map[monster2X][monster2Y] = MONSTER2_CHAR;
         checkColision(19);
 
         // Colocando o botão
-        if (button_pressed == 0)
-        {
-            map[keyX-1][keyY] = SPIKE_CHAR;
-            map[keyX+1][keyY] = SPIKE_CHAR;
-            map[keyX][keyY-1] = SPIKE_CHAR;
-            map[keyX][keyY+1] = SPIKE_CHAR;
-            map[12][12] = BUTTON_CHAR;
-        }
-        else
-        {
-            map[16-1][10] = EMPTY_SPACE;
-            map[16+1][10] = EMPTY_SPACE;
-            map[16][10-1] = EMPTY_SPACE;
-            map[16][10+1] = EMPTY_SPACE;
-        }
-
-        print_level(20);
-
         if (playerX == 12 && playerY == 12)
         {
             button_pressed = 1;
             printf("The Key is now safe to grab!\n");
         }
+
+        printf("POSITION: %d %d\n", playerX, playerY);
+        printf("MONSTER2: %d %d\n", monster2X, monster2Y);
+        printf("KEY: %d %d\n", keyX, keyY);
+        printf("CHAR IN POSITION: %c\n", map[playerX][playerY]);
+        print_level(20);
 
         if (playerX == 19 && playerY == 9 && player_has_key == 1 && key_pressed == 's'){
             system("cls");
