@@ -3,6 +3,7 @@
 #include <time.h>
 #include <conio.h>
 #include <math.h>
+
 // Definindo as constantes
 const char PLAYER_CHAR = '&';
 const char KEY_CHAR = '@';
@@ -20,7 +21,6 @@ const char PORTAL_CHAR = '>';
 
 char map[40][40];
 
-int player_has_key = 0;
 char key_pressed;
 int playerX = 1, playerY = 1;
 int monsterX, monsterY;
@@ -31,12 +31,11 @@ int player_has_key;
 int button_pressed;
 int screen;
 int lives;
-
+int buttonX, buttonY;
 
 // Funções do Jogo
-void placeSpikesAndButton(int buttonX, int buttonY)
+void placeSpikesAndButton()
 {   
-    map[buttonX][buttonY] = BUTTON_CHAR;
 
     if(button_pressed == 0)
     {
@@ -45,15 +44,15 @@ void placeSpikesAndButton(int buttonX, int buttonY)
         map[keyX][keyY+1] = SPIKE_CHAR;
         map[keyX][keyY-1] = SPIKE_CHAR;
     }
+    if (playerX == buttonX && playerY == buttonY && button_pressed == 0)
+    {
+        button_pressed = 1;
+        printf("The Key is now safe to grab!\n");
+    }
+
 }
 void placeKeyAndDoor()
 {
-    // Interação do player pra pegar a chave
-    if (key_pressed == 'i' && map[playerX][playerY] == map[keyX][keyY])
-    {
-        player_has_key = 1;
-    }
-
     if (player_has_key == 0)
     {
         map[doorX][doorY] = CLOSED_DOOR;
@@ -69,7 +68,7 @@ void placeMonster(int limit)
 {
     int monsterDirection = rand()%4;
 
-    // Colisão com as paredes e objetos
+    // Colisão com as paredes
     if (monsterDirection == 0 && monsterX - 1 > 0)
     {
         monsterX--;
@@ -132,6 +131,10 @@ void playerInteractions(int limit)
     {
         playerY++;  
     }
+    if (key_pressed == 'i' && keyX == playerX && keyY == playerY)
+    {
+        player_has_key = 1;
+    }
     // Todo: Consertar player pegando chave em qualquer canto
 }
 void levelWalls(int level_size)
@@ -168,9 +171,23 @@ void print_level(int level_size)
 }
 void checkColision(int limit) 
 {   
-    if(map[playerX][playerY] == MONSTER_CHAR || map[playerX][playerY] == MONSTER2_CHAR || map[playerX][playerY] == SPIKE_CHAR)
+    if(map[playerX][playerY] == MONSTER2_CHAR || map[playerX][playerY] == MONSTER_CHAR || map[playerX][playerY] == SPIKE_CHAR)
     {
         // Todo: Consertar sistema de vidas
+        playerY = 1;
+        playerX = 1; 
+        player_has_key = 0;
+        button_pressed = 0;
+        lives--;
+        monsterX = 5+rand()%(limit - 5);
+        monsterY = 5+rand()%(limit - 5);
+        monster2X = 1;
+        monster2Y = 1;
+        system("cls");
+        printf("|C'mon Silas, are you even trying?|\n|Lifes left: %d|\n\n", lives);
+        system("pause");
+        system("cls");
+
         if (lives == 0) 
         {
             printf
@@ -179,26 +196,12 @@ void checkColision(int limit)
                 "|He failed to find his friend, and now he's trapped inside, forever\n"
                 "|Memento Mori.\n"
             );
-            system("cls");
-            system("pause");
-        }
-        else
-        {
-            playerY = 1;
-            playerX = 1; 
-            player_has_key = 0;
-            lives--;
-            monsterX = 5+rand()%(limit - 5);
-            monsterY = 5+rand()%(limit - 5);
-            monster2X = 5+rand()%(limit - 5);
-            monster2Y = 5+rand()%(limit - 5);
-            system("cls");
-            printf("|C'mon Silas, are you even trying?|\n|Lifes left: %d|\n\n", lives);
             system("pause");
             system("cls");
-            mainMenu();
-        }
-    } 
+            screen = 0;
+            main();
+        } 
+    }
 }
 void mainMenu()
 {
@@ -228,7 +231,8 @@ void mainMenu()
         else if (key_pressed == '2')
         {
             system("cls");
-            printf(
+            printf
+                (
                 "Alright, here are some instructions:\n\n"
                 "The game is an adventure where the player must pass 3 levels.\n"
                 "In each map, the player must move to collect a key and open a closed door.\n\n"
@@ -237,7 +241,9 @@ void mainMenu()
                 "A: Move one unit left\n"
                 "S: Move one unit down\n"
                 "D: Move one unit right\n"
-                "I: Interact with the object on top\n");
+                "I: Interact with the object on top\n"
+                "Q: Return to main menu"
+                );
             system("pause");
         }
         else if (key_pressed == '3')
@@ -269,6 +275,7 @@ int main()
     doorY = 6;
     playerX = 1;
     playerY = 1;
+    player_has_key = 0;
 
     while (screen == 1)
     {   
@@ -283,18 +290,14 @@ int main()
         
         checkColision(9);
         
-        printf("POSITION: %d %d\n", playerX, playerY);
-        printf("MONSTER: %d %d\n", monsterX, monsterY);
-        printf("KEY: %d %d\n", keyX, keyY);
-        printf("CHAR IN POSITION: %c\n", map[playerX][playerY]);
-        
         print_level(10);
 
         if (map[playerX+1][playerY] == OPENED_DOOR)
         {
-            printf("Press 'i' to enter the next room");
+            printf("Press 'i' to enter the next room\n");
             if (key_pressed == 'i')
             {
+                player_has_key = 0;
                 screen++;
                 break;
             }
@@ -322,14 +325,18 @@ int main()
     playerX = 1;
     playerY = 1;
     button_pressed = 0;
-    player_has_key = 0;
     doorX = 19;
     doorY = 8;
     keyX = 7;
     keyY = 9;
     monsterX = 9;
     monsterY = 15;
-
+    monster2X = 1;
+    monster2Y = 1;
+    buttonX = 10;
+    buttonY = 10;
+    player_has_key = 0;
+    
     // Inicio da Fase 2
     while (screen == 2)
     {  
@@ -338,36 +345,18 @@ int main()
         playerInteractions(19);
         placeMonster(19);
         placeKeyAndDoor();
-        placeSpikesAndButton(10, 10);
         
-
+        // Colocando objetos no mapa
+        map[buttonX][buttonY] = BUTTON_CHAR;
         map[playerX][playerY] = PLAYER_CHAR;
-        map[monsterX][monsterY] = MONSTER_CHAR;
-        map[monster2X][monster2Y] = MONSTER2_CHAR;
-        checkColision(19);
-
-        // Colocando o botão
-        if (playerX == 12 && playerY == 12)
+        placeSpikesAndButton(10, 10);
+        if (button_pressed == 1)
         {
-            button_pressed = 1;
-            printf("The Key is now safe to grab!\n");
-            monster2X = 1;
-            monster2Y = 1;
             placeMonster2();
+            map[monster2X][monster2Y] = MONSTER2_CHAR;
         }
-        if (map[playerX+1][playerY] == OPENED_DOOR)
-        {
-            printf("Press 'i' to enter the next room");
-            if (key_pressed == 'i')
-            {
-                screen++;
-            }
-        }
-
-        /* printf("POSITION: %d %d\n", playerX, playerY);
-        printf("MONSTER2: %d %d\n", monster2X, monster2Y);
-        printf("KEY: %d %d\n", keyX, keyY);
-        printf("CHAR IN POSITION: %c\n", map[playerX][playerY]);*/
+        map[monsterX][monsterY] = MONSTER_CHAR;
+        checkColision(19);
 
         print_level(20);
 
@@ -386,31 +375,71 @@ int main()
         system("cls");
     } 
     // Transição entre a Fase 2 e a Fase 3
-
+    
     system("cls");
     printf
     (
         "|Silas manages enters the final room, finding the great detroyer.\n"
         "|- The destroyer i knew you kidnapped my Friend!\n"
-        "|- I will let him free for 505 rupees. \n"
-        "|Also, you will have to pass through this next room, i want to test my teletransporters.\n"
-        "|- Fine. Here are your rupees!\n"
-        "|- May the final test begin."
+        "|- I will let him free if you help me test my new portals. \n"
+        "|I'll give you 505 rupees also. \n"
+        "|- Erm... what the sigma? Okay then.\n"
+        "|- We can eat cake at Henry's after this is over too. "
     );
+
+
     system("pause");
 
+    // Reinicializando variáveis
+    playerX = 1;
+    playerY = 1;
+    button_pressed = 0;
+    doorX = 39;
+    doorY = 20;
+    keyX = 30;
+    keyY = 17;
+    monsterX = 9;
+    monsterY = 15;
+    monster2X = 1;
+    monster2Y = 1;
+    buttonX = 30;
+    buttonY = 30;
+    player_has_key = 0;
+
+    // Começando a fase 3
     while (screen == 3)
     {
         system("cls");
         levelWalls(40);
-        playerInteractions(29);
-        placeMonster2();
-        placeMonster(29);
+        playerInteractions(39);
+        placeMonster(39);
         placeKeyAndDoor();
+        
+        map[buttonX][buttonY] = BUTTON_CHAR;
         map[playerX][playerY] = PLAYER_CHAR;
+        placeSpikesAndButton();
+        if (button_pressed == 1)
+        {
+            placeMonster2();
+            map[monster2X][monster2Y] = MONSTER2_CHAR;
+        }
         map[monsterX][monsterY] = MONSTER_CHAR;
-        map[monster2X][monster2Y] = MONSTER2_CHAR;
         checkColision(39);
+
+        map[9][27] = PORTAL_CHAR;
+        map[30][10] = PORTAL_CHAR;
+
+        if (playerX == 9 && playerY == 27) 
+        {
+            playerX = 30;
+            playerY = 10;
+        }
+        else if (playerX == 30 && playerY == 10) 
+        {
+            playerX = 9;
+            playerY = 27;
+        }
+
 
         print_level(40);
 
@@ -423,11 +452,23 @@ int main()
                 break;
             }
         }
+        
 
         key_pressed = getch();
-    }
+        
+        system("cls");
+    } 
+    system("cls");
+    printf
+    (
+    "|After the rescue, Destroyer, Charlie and Silas go to Henry's house to eat cake\n"
+    "|There was no cake. But they had fun. \n"
+    "|The end.\n"
+    );
 
     system("pause");
+    system("cls");
+    printf("Thanks for Playing.\nMade by: 3H & Analice\nSpecial Thanks: Silas\n'Vi Veri Veniversum Vivus Vici'");
     
     return 0;
 }
