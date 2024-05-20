@@ -469,6 +469,7 @@ int main()
     system("pause");
     system("cls");
     printf("Thanks for Playing.\nMade by: 3H & Analice\nSpecial Thanks: Silas\n'Vi Veri Veniversum Vivus Vici'");
+    system("pause");
     
     return 0;
 }
