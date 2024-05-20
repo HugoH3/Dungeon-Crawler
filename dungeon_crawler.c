@@ -250,7 +250,7 @@ void mainMenu()
         {
             system("cls");
             printf("The howls echo through the forest as you depart. Until the next full moon, brave adventurer.");
-            system("exit");
+            exit(0);
         }
         else
         {
